@@ -1,146 +1,133 @@
-
-import { readFileSync } from 'fs';
-import marked from 'marked';
-import { sanitizeHtml } from './sanitizer';
-import { ParsedRequest } from './types';
-const twemoji = require('twemoji');
-const twOptions = { folder: 'svg', ext: '.svg' };
+import { readFileSync } from "fs";
+import { sanitizeHtml } from "./sanitizer";
+import { ParsedRequest } from "./types";
+const twemoji = require("twemoji");
+const twOptions = { folder: "svg", ext: ".svg" };
 const emojify = (text: string) => twemoji.parse(text, twOptions);
 
-const rglr = readFileSync(`${__dirname}/../_fonts/Inter-Regular.woff2`).toString('base64');
-const bold = readFileSync(`${__dirname}/../_fonts/Inter-Bold.woff2`).toString('base64');
-const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString('base64');
+const rglr = readFileSync(
+  `${__dirname}/../_fonts/Inter-Regular.woff2`
+).toString("base64");
+const bold = readFileSync(`${__dirname}/../_fonts/Inter-Bold.woff2`).toString(
+  "base64"
+);
 
-function getCss(theme: string, fontSize: string) {
-    let background = 'white';
-    let foreground = 'black';
-    let radial = 'lightgray';
-
-    if (theme === 'dark') {
-        background = 'black';
-        foreground = 'white';
-        radial = 'dimgray';
-    }
-    return `
+const fontFace = `
     @font-face {
-        font-family: 'Inter';
-        font-style:  normal;
-        font-weight: normal;
-        src: url(data:font/woff2;charset=utf-8;base64,${rglr}) format('woff2');
-    }
-
-    @font-face {
-        font-family: 'Inter';
-        font-style:  normal;
-        font-weight: bold;
-        src: url(data:font/woff2;charset=utf-8;base64,${bold}) format('woff2');
-    }
-
-    @font-face {
-        font-family: 'Vera';
+        font-family: "Inter";
         font-style: normal;
         font-weight: normal;
-        src: url(data:font/woff2;charset=utf-8;base64,${mono})  format("woff2");
-      }
+        src: url(data:font/woff2;charset=utf-8;base64,${rglr}) format("woff2");
+    }
+
+    @font-face {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: bold;
+        src: url(data:font/woff2;charset=utf-8;base64,${bold}) format("woff2");
+    }
+
+`;
+
+function getCss(fontSize: string) {
+  return `
+
+    ${fontFace}
+
+    * {
+        box-sizing: border-box;
+    }
 
     body {
-        background: ${background};
-        background-image: radial-gradient(circle at 25px 25px, ${radial} 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${radial} 2%, transparent 0%);
-        background-size: 100px 100px;
+        background: linear-gradient(to right, #6790ac 0%, #445564 100%) no-repeat;
         height: 100vh;
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        padding-top: 4vh;
+    }
+
+    .AuthorBlock {
+        color: #6c757d;
         display: flex;
-        text-align: center;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-    }
-
-    code {
-        color: #D400FF;
-        font-family: 'Vera';
-        white-space: pre-wrap;
-        letter-spacing: -5px;
-    }
-
-    code:before, code:after {
-        content: '\`';
-    }
-
-    .logo-wrapper {
-        display: flex;
-        align-items: center;
-        align-content: center;
-        justify-content: center;
-        justify-items: center;
-    }
-
-    .logo {
-        margin: 0 75px;
-    }
-
-    .plus {
-        color: #BBB;
-        font-family: Times New Roman, Verdana;
-        font-size: 100px;
-    }
-
-    .spacer {
-        margin: 150px;
-    }
-
-    .emoji {
-        height: 1em;
-        width: 1em;
-        margin: 0 .05em 0 .1em;
-        vertical-align: -0.1em;
-    }
-    
-    .heading {
+        font-size: 64px;
         font-family: 'Inter', sans-serif;
+        font-weight: normal;
+    }
+
+    .AuthorBlock svg {
+        margin: 2rem;
+    }
+
+    .CardContainer {
+    background: #212529;
+    height: 96vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5vh;
+    }
+
+.emoji {
+  height: 1em;
+  width: 1em;
+  margin: 0 0.05em 0 0.1em;
+  vertical-align: -0.1em;
+}
+
+.heading {
+
+  color: #dee2e6;
+  text-align: center;
+  flex: 1;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+    #title {
         font-size: ${sanitizeHtml(fontSize)};
+        font-family: 'Inter', sans-serif;
+        font-weight: bold;
         font-style: normal;
-        color: ${foreground};
-        line-height: 1.8;
-    }`;
+        line-height: 1.4;
+        margin: 0;
+        background: red;
+    }
+`;
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-    const { text, theme, md, fontSize, images, widths, heights } = parsedReq;
-    return `<!DOCTYPE html>
+  const { text, fontSize } = parsedReq;
+  return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        ${getCss(theme, fontSize)}
+        ${getCss(fontSize)}
     </style>
     <body>
-        <div>
-            <div class="spacer">
-            <div class="logo-wrapper">
-                ${images.map((img, i) =>
-                    getPlusSign(i) + getImage(img, widths[i], heights[i])
-                ).join('')}
-            </div>
-            <div class="spacer">
-            <div class="heading">${emojify(
-                md ? marked(text) : sanitizeHtml(text)
-            )}
-            </div>
-        </div>
-    </body>
+
+    <div class="CardContainer">
+
+
+  <div class="heading">
+    <h1 id="title">${emojify(sanitizeHtml(text))}</h1>
+  </div>
+
+   <div class="AuthorBlock">
+     <span>Charles Peters</span>
+
+     <svg width="78" height="71" viewBox="0 0 78 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <path fill-rule="evenodd" clip-rule="evenodd" d="M0 10.4443L6.99689 1H32.5361V24.7713L16.2681 37.5662V70.6444L0 56.4198V10.4443ZM29.2825 4.25215H16.2681V33.428L29.2825 23.1928V4.25215ZM3.25361 11.5083L8.64647 4.25215H13.0144V35.9876L3.25361 43.6632V11.5083ZM3.25361 47.8014V54.9445L13.0144 63.4793V40.1241L3.25361 47.8014Z" fill="currentColor" />
+     </svg>
+   </div>
+
+</div>
 </html>`;
-}
-
-function getImage(src: string, width ='auto', height = '225') {
-    return `<img
-        class="logo"
-        alt="Generated Image"
-        src="${sanitizeHtml(src)}"
-        width="${sanitizeHtml(width)}"
-        height="${sanitizeHtml(height)}"
-    />`
-}
-
-function getPlusSign(i: number) {
-    return i === 0 ? '' : '<div class="plus">+</div>';
 }
