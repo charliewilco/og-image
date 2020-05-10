@@ -96,7 +96,6 @@ function getCss(fontSize: string) {
         font-style: normal;
         line-height: 1.4;
         margin: 0;
-        background: red;
     }
 `;
 }
