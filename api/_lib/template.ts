@@ -129,31 +129,44 @@ function getCss(fontSize: string) {
         letter-spacing: -5px;
     }
 
-    code:before, code:after {
-        content: '\`';
+    body {
+        background: linear-gradient(to right, #6790ac 0%, #445564 100%) no-repeat;
+        height: 100vh;
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        padding-top: 4vh;
     }
 
-    .logo-wrapper {
+    .AuthorBlock {
+        color: #6c757d;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        align-content: center;
-        justify-content: center;
-        justify-items: center;
+        font-size: 64px;
+        font-family: 'Inter', sans-serif;
+        font-weight: normal;
     }
 
-    .logo {
-        margin: 0 75px;
+    .AuthorBlock svg {
+        margin: 2rem;
     }
 
-    .plus {
-        color: #BBB;
-        font-family: Times New Roman, Verdana;
-        font-size: 100px;
+    .CardContainer {
+    background: #212529;
+    height: 96vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5vh;
     }
 
-    .spacer {
-        margin: 150px;
-    }
+.emoji {
+  height: 1em;
+  width: 1em;
+  margin: 0 0.05em 0 0.1em;
+  vertical-align: -0.1em;
+}
 
     .emoji {
         height: 1em;
@@ -165,6 +178,8 @@ function getCss(fontSize: string) {
     .heading {
         font-family: 'Gotham Ssm A', 'Gotham Ssm B', sans-serif;
         font-size: ${sanitizeHtml(fontSize)};
+        font-family: 'Inter', sans-serif;
+        font-weight: bold;
         font-style: normal;
         color: ${foreground};
         line-height: 1.8;
