@@ -79,6 +79,15 @@ const TextInput = ({ value, oninput }: TextInputProps) => {
   );
 };
 
+// interface ButtonProps {
+//   label: string;
+//   onclick: () => void;
+// }
+
+// const Button = ({ label, onclick }: ButtonProps) => {
+//   return H("button", { onclick }, label);
+// };
+
 interface FieldProps {
   label: string;
   input: any;
@@ -128,11 +137,35 @@ const fontSizeOptions: DropdownOption[] = Array.from({ length: 10 })
   .filter((n) => n > 0)
   .map((n) => ({ text: n + "px", value: n + "px" }));
 
+// const widthOptions = [
+//   { text: "width", value: "auto" },
+//   { text: "50", value: "50" },
+//   { text: "100", value: "100" },
+//   { text: "150", value: "150" },
+//   { text: "200", value: "200" },
+//   { text: "250", value: "250" },
+//   { text: "300", value: "300" },
+//   { text: "350", value: "350" },
+// ];
+
+// const heightOptions = [
+//   { text: "height", value: "auto" },
+//   { text: "50", value: "50" },
+//   { text: "100", value: "100" },
+//   { text: "150", value: "150" },
+//   { text: "200", value: "200" },
+//   { text: "250", value: "250" },
+//   { text: "300", value: "300" },
+//   { text: "350", value: "350" },
+// ];
+
 interface AppState extends ParsedRequest {
   loading: boolean;
   showToast: boolean;
   messageToast: string;
   selectedImageIndex: number;
+  widths: string[];
+  heights: string[];
   overrideUrl: URL | null;
 }
 
@@ -153,7 +186,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
   const {
     fileType = "png",
     fontSize = "100px",
-    text = "TypeScript is Not C#",
+    text = "TypeScript is My World",
     showToast = false,
     messageToast = "",
     loading = true,
@@ -171,7 +204,6 @@ const App = (_: any, state: AppState, setState: SetState) => {
       { className: "pull-left" },
       H(
         "div",
-
         H(Field, {
           label: "File Type",
           input: H(Dropdown, {

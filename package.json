@@ -9,7 +9,6 @@
     "twemoji": "12.1.5"
   },
   "devDependencies": {
-    "@types/marked": "0.7.3",
     "@types/puppeteer": "2.0.1",
     "@types/puppeteer-core": "2.0.0",
     "typescript": "3.8.3"
